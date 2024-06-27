@@ -1,0 +1,9 @@
+Server:
+  Port: 8087
+
+DataBase:
+  Host: "localhost"
+  Port: 5432
+  Username: "olegsemashko"
+  Password: 0000
+  DBName: "GreenDB"
