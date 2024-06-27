@@ -19,20 +19,21 @@ func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Con
 	return t.templates.ExecuteTemplate(w, name, data)
 }
 
-func getSettings(c echo.Context) error {
-	params := new(models.Params)
-	if err := c.Bind(params); err != nil {
+func (a *App) getSettings(c echo.Context) error {
+	params := models.Params{}
+	if err := c.Bind(&params); err != nil {
 		return err
 	}
 
-	url := fmt.Sprintf("https://api.green-api.com/getSettings/%s/%s", params.IDInstance, params.ApiTokenInstance)
+	url := fmt.Sprintf("%s/getSettings/%s/%s", a.Config.Api.ApiUrl, params.IDInstance, params.ApiTokenInstance)
+
 	resp, err := http.Get(url)
 	if err != nil {
 		return err
 	}
 	defer resp.Body.Close()
 
-	var result map[string]interface{}
+	result := make(map[string]interface{})
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return err
 	}

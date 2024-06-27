@@ -6,12 +6,9 @@ import (
 	"github.com/spf13/viper"
 )
 
-type DataBaseConfig struct {
-	Host     string `yaml:"Host"`
-	Port     int    `yaml:"Port"`
-	Username string `yaml:"Username"`
-	Password int    `yaml:"Password"`
-	DBName   string `yaml:"DBName"`
+type Api struct {
+	ApiUrl   string `yaml:"ApiUrl"`
+	MediaUrl string `yaml:"MediaUrl"`
 }
 
 type ServerConfig struct {
@@ -19,8 +16,8 @@ type ServerConfig struct {
 }
 
 type Config struct {
-	DataBase DataBaseConfig `yaml:"DataBase"`
-	Server   ServerConfig   `yaml:"Server"`
+	Api    Api          `yaml:"Api"`
+	Server ServerConfig `yaml:"Server"`
 }
 
 func GetConfig() *Config {

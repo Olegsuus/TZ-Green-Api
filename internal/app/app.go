@@ -37,7 +37,7 @@ func (a *App) Start() error {
 		return c.Render(http.StatusOK, "index.html", nil)
 	})
 
-	e.POST("/getSettings", getSettings)
+	e.POST("/getSettings", a.getSettings)
 	e.POST("/getStateInstance", getStateInstance)
 	e.POST("/sendMessage", sendMessage)
 	e.POST("/sendFileByUrl", sendFileByUrl)
