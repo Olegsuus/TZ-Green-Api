@@ -40,10 +40,10 @@
             <button onclick="sendMessage()">sendMessage</button>
         </div>
         <div class="field">
-            <input type="text" id="phoneNumberFile" placeholder="77771234567">
+            <input type="text" id="chatId" placeholder="77771234567">
         </div>
         <div class="field">
-            <input type="text" id="fileUrl" placeholder="https://my.site.com/img/horse.png">
+            <input type="text" id="urlFile" placeholder="https://my.site.com/img/horse.png">
         </div>
         <div class="button">
             <button onclick="sendFileByUrl()">sendFileByUrl</button>
@@ -90,9 +90,10 @@
     function sendFileByUrl() {
         const idInstance = document.getElementById('idInstance').value;
         const apiTokenInstance = document.getElementById('apiTokenInstance').value;
-        const phoneNumberFile = document.getElementById('phoneNumberFile').value;
-        const fileUrl = document.getElementById('fileUrl').value;
-        apiRequest('/sendFileByUrl', { idInstance, apiTokenInstance, phoneNumberFile, fileUrl });
+        const chatId = document.getElementById('chatId').value;
+        const urlFile = document.getElementById('urlFile').value;
+        const caption = document.getElementById('message').value;
+        apiRequest('/sendFileByUrl', { idInstance, apiTokenInstance, chatId, urlFile, caption });
     }
 </script>
 </body>

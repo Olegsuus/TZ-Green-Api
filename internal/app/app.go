@@ -12,13 +12,8 @@ import (
 )
 
 type App struct {
-	Config          *config.Config
-	DB              Storage
-	ServerInterface ServerInterface
-	Echo            *echo.Echo
-}
-
-type Storage interface {
+	Config *config.Config
+	Echo   *echo.Echo
 }
 
 func (a *App) Start() error {
@@ -38,13 +33,9 @@ func (a *App) Start() error {
 	})
 
 	e.POST("/getSettings", a.getSettings)
-	e.POST("/getStateInstance", getStateInstance)
-	e.POST("/sendMessage", sendMessage)
-	e.POST("/sendFileByUrl", sendFileByUrl)
+	e.POST("/getStateInstance", a.getStateInstance)
+	e.POST("/sendMessage", a.sendMessage)
+	e.POST("/sendFileByUrl", a.sendFileByUrl)
 
 	return e.Start(addr)
-}
-
-func (a *App) Stop() {
-	//
 }

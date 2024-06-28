@@ -7,3 +7,13 @@ type Params struct {
 	Message          string `json:"message"`
 	FileUrl          string `json:"fileUrl"`
 }
+
+type ParamsFileUrl struct {
+	IDInstance       string `json:"idInstance"`
+	ApiTokenInstance string `json:"apiTokenInstance"`
+	ChatId           string `json:"chatId"`
+	UrlFile          string `json:"urlFile"`
+	FileName         string `json:"fileName"`
+	Caption          string `json:"caption"`
+	QuotedMessageId  string `json:"quotedMessageId"`
+}

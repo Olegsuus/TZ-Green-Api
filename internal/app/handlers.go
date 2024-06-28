@@ -9,6 +9,14 @@ import (
 	"html/template"
 	"io"
 	"net/http"
+	"path"
+)
+
+const (
+	MethodGetSettings      = "getSettings"
+	MethodGetStateInstance = "getStateInstance"
+	MethodSendMessage      = "sendMessage"
+	MethodSendFileByUrl    = "sendFileByUrl"
 )
 
 type Template struct {
@@ -19,13 +27,17 @@ func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Con
 	return t.templates.ExecuteTemplate(w, name, data)
 }
 
+func constructURL(apiUrl, idInstance, apiTokenInstance, method string) string {
+	return fmt.Sprintf("%s/waInstance%s/%s/%s", apiUrl, idInstance, method, apiTokenInstance)
+}
+
 func (a *App) getSettings(c echo.Context) error {
 	params := models.Params{}
 	if err := c.Bind(&params); err != nil {
 		return err
 	}
 
-	url := fmt.Sprintf("%s/getSettings/%s/%s", a.Config.Api.ApiUrl, params.IDInstance, params.ApiTokenInstance)
+	url := constructURL(a.Config.Api.ApiUrl, params.IDInstance, params.ApiTokenInstance, MethodGetSettings)
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -41,13 +53,13 @@ func (a *App) getSettings(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
-func getStateInstance(c echo.Context) error {
-	params := new(models.Params)
-	if err := c.Bind(params); err != nil {
+func (a *App) getStateInstance(c echo.Context) error {
+	params := models.Params{}
+	if err := c.Bind(&params); err != nil {
 		return err
 	}
 
-	url := fmt.Sprintf("https://api.green-api.com/getStateInstance/%s/%s", params.IDInstance, params.ApiTokenInstance)
+	url := constructURL(a.Config.Api.ApiUrl, params.IDInstance, params.ApiTokenInstance, MethodGetStateInstance)
 	resp, err := http.Get(url)
 	if err != nil {
 		return err
@@ -62,18 +74,17 @@ func getStateInstance(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
-func sendMessage(c echo.Context) error {
-	params := new(models.Params)
-	if err := c.Bind(params); err != nil {
+func (a *App) sendMessage(c echo.Context) error {
+	params := models.Params{}
+	if err := c.Bind(&params); err != nil {
 		return err
 	}
 
-	url := "https://api.green-api.com/sendMessage"
+	url := constructURL(a.Config.Api.ApiUrl, params.IDInstance, params.ApiTokenInstance, MethodSendMessage)
+
 	reqBody, err := json.Marshal(map[string]string{
-		"idInstance":       params.IDInstance,
-		"apiTokenInstance": params.ApiTokenInstance,
-		"phoneNumber":      params.PhoneNumber,
-		"message":          params.Message,
+		"chatId":  params.PhoneNumber,
+		"message": params.Message,
 	})
 	if err != nil {
 		return err
@@ -93,18 +104,19 @@ func sendMessage(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
-func sendFileByUrl(c echo.Context) error {
-	params := new(models.Params)
-	if err := c.Bind(params); err != nil {
+func (a *App) sendFileByUrl(c echo.Context) error {
+	params := models.ParamsFileUrl{}
+	if err := c.Bind(&params); err != nil {
 		return err
 	}
 
-	url := "https://api.green-api.com/sendFileByUrl"
+	url := constructURL(a.Config.Api.ApiUrl, params.IDInstance, params.ApiTokenInstance, MethodSendFileByUrl)
+
 	reqBody, err := json.Marshal(map[string]string{
-		"idInstance":       params.IDInstance,
-		"apiTokenInstance": params.ApiTokenInstance,
-		"phoneNumberFile":  params.PhoneNumber,
-		"fileUrl":          params.FileUrl,
+		"chatId":   params.ChatId,
+		"urlFile":  params.UrlFile,
+		"fileName": path.Base(params.UrlFile),
+		"caption":  params.Caption,
 	})
 	if err != nil {
 		return err
